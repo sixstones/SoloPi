@@ -117,18 +117,6 @@ public class RecorderConfigActivity extends BaseActivity {
             }
         });
 
-        mStartBtn = (Button) findViewById(R.id.btn_start);
-        mStartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkVideoSettings()) {
-                    startWindow(v);
-                } else {
-                    toastShort(getString(R.string.codec__video_config_unsupport));
-                }
-            }
-        });
-
         mVideoCodec = (TextSpinner) findViewById(R.id.spinner_video_codec);
         mVideoResolution = (TextSpinner) findViewById(R.id.spinner_resolution);
         mVideoFrameRate = (TextSpinner) findViewById(R.id.spinner_framerate);
@@ -177,6 +165,18 @@ public class RecorderConfigActivity extends BaseActivity {
                     return;
                 }
                 onExceptDiffChanged(position, (String) view.getSelectedItem());
+            }
+        });
+
+        mStartBtn = (Button) findViewById(R.id.btn_start);
+        mStartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkVideoSettings()) {
+                    startWindow(v);
+                } else {
+                    toastShort(getString(R.string.codec__video_config_unsupport));
+                }
             }
         });
     }

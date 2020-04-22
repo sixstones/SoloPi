@@ -66,6 +66,9 @@ public class RecordService extends Service {
     public static final String INTENT_VIDEO_BITRATE =  "INTENT_VIDEO_BITRATE";
     public static final String INTENT_EXCEPT_DIFF =  "INTENT_EXCEPT_DIFF";
 
+    public static final String INTENT_START =  "INTENT_START";
+    public static final String INTENT_END =  "INTENT_END";
+
     public static final String ACTION_INIT = "ACTION_INIT";
 
     private static final String TAG = RecordService.class.getSimpleName();
@@ -116,6 +119,8 @@ public class RecordService extends Service {
     private Intent mIntent;
     private int mResultCode;
     private double mExceptDiff;
+
+    private boolean isOnlyRecord = false;
 
     @Override
     public void onCreate() {
@@ -263,6 +268,10 @@ public class RecordService extends Service {
         stopSelf();
     }
 
+    private void onStopRecord(){
+        pauseRecorder();
+    }
+
     private void updateViewPosition() {
         // 更新浮动窗口位置参数
         wmParams.x = (int) (x - mTouchStartX);
@@ -273,7 +282,7 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.d(TAG, "onStart");
+        LogUtil.d(TAG, "onStartCommand");
         stopForeground(false);
 
         if (intent == null) {
@@ -291,6 +300,15 @@ public class RecordService extends Service {
             mWidth = intent.getIntExtra(INTENT_WIDTH, 0);
             mHeight = intent.getIntExtra(INTENT_HEIGHT, 0);
             mExceptDiff = intent.getDoubleExtra(INTENT_EXCEPT_DIFF, 0);
+            isOnlyRecord = false;
+        }
+        else if(INTENT_START.equals(intent.getAction())){
+            LogUtil.d(TAG,"onStartCommand" + intent.getAction());
+            isOnlyRecord = true;
+            onRecordBtnClicked();
+        }else if(INTENT_END.equals(intent.getAction())){
+            LogUtil.d(TAG,"onStartCommand" + intent.getAction());
+            onStopRecord();
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -378,6 +396,18 @@ public class RecordService extends Service {
                         resultView.setVisibility(View.VISIBLE);
                     }
                 });
+                if(isOnlyRecord){
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isCalculating = false;
+                            recordBtn.setText(R.string.record__start_record);
+                            resultView.setText("广播方式仅录屏，不处理分析解帧");
+
+                        }
+                    });
+                    return;
+                }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -461,6 +491,12 @@ public class RecordService extends Service {
             mRecorder.quit();
         }
         mRecorder = null;
+    }
+
+    private void pauseRecorder(){
+        if (mRecorder != null) {
+            mRecorder.quit();
+        }
     }
 
     private VideoEncodeConfig createVideoConfig() {
