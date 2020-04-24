@@ -1,24 +1,9 @@
-<!--
-  ~ Copyright (C) 2015-present, Ant Financial Services Group
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~ 	http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alipay.hulu"
     android:versionCode="31"
     android:versionName="0.10.1">
-
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -38,20 +23,27 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
 
-
     <application
-        android:name="com.alipay.hulu.activity.MyApplication"
+        android:name=".activity.MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme"
         tools:replace="android:theme">
+        <receiver
+            android:name=".receiver.ScreenRecordReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.vivobrowser.srceenrecord"></action>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".activity.SplashActivity"
@@ -61,6 +53,7 @@
             android:theme="@style/AppNoTitleBarTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -71,78 +64,96 @@
         <activity
             android:name=".activity.CaseEditActivity"
             android:label="@string/activity__case_edit"
-            android:screenOrientation="unspecified"/>
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.InfoActivity"
             android:label="@string/activity__about"
-            android:screenOrientation="unspecified"/>
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.SettingsActivity"
-            android:screenOrientation="unspecified"
-            android:label="@string/activity__setting" />
+            android:label="@string/activity__setting"
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.PerformanceActivity"
-            android:label="@string/activity__performance_test"
             android:configChanges="orientation|keyboard|screenSize"
-            android:screenOrientation="unspecified"/>
+            android:label="@string/activity__performance_test"
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.CaseReplayResultActivity"
             android:label="@string/activity__replay_result"
-            android:screenOrientation="unspecified"/>
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.NewReplayListActivity"
             android:label="@string/activity__case_list"
-            android:screenOrientation="unspecified"/>
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.IndexActivity"
-            android:launchMode="singleTask"
-            android:label="@string/activity__index"
             android:configChanges="orientation|keyboard|screenSize"
-            android:screenOrientation="unspecified"/>
+            android:label="@string/activity__index"
+            android:launchMode="singleTask"
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.NewRecordActivity"
             android:label="@string/activity__record"
             android:launchMode="singleTask"
-            android:screenOrientation="unspecified"/>
-        <activity android:name=".activity.RecordManageActivity"
+            android:screenOrientation="unspecified" />
+        <activity
+            android:name=".activity.RecordManageActivity"
             android:label="@string/activity__performance_manage"
             android:screenOrientation="unspecified" />
         <activity
             android:name=".activity.QRScanActivity"
             android:label="@string/activity__scan"
             android:launchMode="singleInstance"
-            android:screenOrientation="unspecified"/>
-
-        <activity android:name=".activity.BatchExecutionActivity"
-                  android:label="@string/activity__batch_replay"
-                  android:screenOrientation="unspecified"/>
-
-        <activity android:name=".activity.BatchReplayResultActivity"
-                  android:label="@string/activity__batch_replay_result"
-                  android:screenOrientation="unspecified"/>
-        <activity android:name=".activity.LicenseActivity"
+            android:screenOrientation="unspecified" />
+        <activity
+            android:name=".activity.BatchExecutionActivity"
+            android:label="@string/activity__batch_replay"
+            android:screenOrientation="unspecified" />
+        <activity
+            android:name=".activity.BatchReplayResultActivity"
+            android:label="@string/activity__batch_replay_result"
+            android:screenOrientation="unspecified" />
+        <activity
+            android:name=".activity.LicenseActivity"
             android:label="@string/activity__license"
             android:screenOrientation="unspecified" />
-        <activity android:name=".screenRecord.RecorderConfigActivity"
+        <activity
+            android:name=".screenRecord.RecorderConfigActivity"
             android:label="@string/activity__record_config"
-            />
-        <activity android:name=".activity.CaseParamEditActivity"
-            android:label="@string/activity__gen_param_case"/>
+            android:noHistory="true">
 
-        <service android:name=".service.FloatWinService"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="screenrecord"
+                    android:scheme="solopi"/>
+            </intent-filter>
 
-        <service android:name=".tools.AdbIME"
-                 android:label="@string/app_name"
-                 android:permission="android.permission.BIND_INPUT_METHOD">
+        </activity>
+        <activity
+            android:name=".activity.CaseParamEditActivity"
+            android:label="@string/activity__gen_param_case" />
+
+        <service android:name=".service.FloatWinService" />
+        <service
+            android:name=".tools.AdbIME"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-            <meta-data android:name="android.view.im" android:resource="@xml/methods" />
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/methods" />
         </service>
-        <service android:name=".screenRecord.RecordService"/>
+        <service android:name=".screenRecord.RecordService" android:enabled="true"/>
         <service android:name=".screenRecord.SimpleRecordService" />
 
-        <receiver android:name=".service.InstallReceiver" >
+        <receiver android:name=".service.InstallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -160,9 +171,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider" />
         </provider>
-
-
-
     </application>
 
 </manifest>

@@ -31,10 +31,16 @@ import android.widget.TextView;
 
 import com.alipay.hulu.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class TextSpinner extends LinearLayout {
     private TextView mTitleView;
     private Spinner mSpinner;
     private OnItemSelectedListener mListener;
+
+    private ArrayAdapter<CharSequence> mAdapter;
 
     public TextSpinner(Context context) {
         this(context, null);
@@ -66,11 +72,15 @@ public class TextSpinner extends LinearLayout {
         });
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextSpinner, defStyleAttr, defStyleRes);
         final CharSequence[] entries = a.getTextArray(R.styleable.TextSpinner_entries);
+
         if (entries != null) {
-            final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(
-                    context, android.R.layout.simple_spinner_item, entries);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapter);
+            ArrayList<CharSequence> entries_list = new ArrayList<CharSequence>();
+            entries_list.addAll(Arrays.asList(entries));
+//            List<CharSequence> entries_list = Arrays.asList(entries);
+            mAdapter = new ArrayAdapter<>(
+                    context, android.R.layout.simple_spinner_item, entries_list);
+            mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(mAdapter);
         }
         int textAppearance = a.getResourceId(R.styleable.TextSpinner_textAppearance,
                 android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -122,6 +132,10 @@ public class TextSpinner extends LinearLayout {
         if (mListener != null) {
             mListener.onItemSelected(this, position);
         }
+    }
+
+    public void insertNewItem(CharSequence item, int position) {
+        mAdapter.insert(item, position);
     }
 
 

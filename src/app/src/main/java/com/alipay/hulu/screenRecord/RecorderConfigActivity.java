@@ -16,22 +16,28 @@
 package com.alipay.hulu.screenRecord;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.media.MediaCodecInfo;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Range;
 import android.util.Rational;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SpinnerAdapter;
 
 import com.alipay.hulu.R;
 import com.alipay.hulu.activity.BaseActivity;
+import com.alipay.hulu.common.application.LauncherApplication;
 import com.alipay.hulu.common.utils.LogUtil;
 import com.alipay.hulu.common.utils.PermissionUtil;
 import com.alipay.hulu.ui.HeadControlPanel;
@@ -130,6 +136,7 @@ public class RecorderConfigActivity extends BaseActivity {
             }
         });
 
+        mVideoResolution.insertNewItem(getDeviceResolution(getDeviceWidthHeight()),0);
         mVideoResolution.setOnItemSelectedListener(new TextSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(TextSpinner view, int position) {
@@ -430,6 +437,18 @@ public class RecorderConfigActivity extends BaseActivity {
             throw new IllegalArgumentException();
         }
         return new int[]{Integer.parseInt(xes[0]), Integer.parseInt(xes[1])};
+    }
+
+    private int[] getDeviceWidthHeight(){
+        WindowManager windowManager = (WindowManager) LauncherApplication.getContext().getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        windowManager.getDefaultDisplay().getRealSize(point);// 手机屏幕的宽度
+        Log.d(TAG, "getDeviceWidthHeight: "+ point.x + ',' + point.y);
+        return new int[]{(int)(point.x*0.8),(int)(point.y*0.8)};
+    }
+
+    private String getDeviceResolution(int[] DeviceWidthHeight){
+        return String.valueOf(DeviceWidthHeight[1]) + 'x' + String.valueOf(DeviceWidthHeight[0]);
     }
 
     private static String[] codecInfoNames(MediaCodecInfo[] codecInfos) {
