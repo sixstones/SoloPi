@@ -54,6 +54,7 @@ public class HttpUtil {
                     .followSslRedirects(true)
                     .retryOnConnectionFailure(true)
                     .cache(null)
+                    .dns(new HttpDns())
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .writeTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(5, TimeUnit.SECONDS);
