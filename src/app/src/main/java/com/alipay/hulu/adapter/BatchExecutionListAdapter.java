@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alipay.hulu.R;
@@ -43,7 +44,7 @@ public class BatchExecutionListAdapter extends BaseAdapter{
     private Delegate mDelegate;
 
     public interface Delegate {
-        void onItemAdd(RecordCaseInfo caseInfo);
+        void onItemAdd(RecordCaseInfo caseInfo,int times);
     }
 
     public BatchExecutionListAdapter(Context context) {
@@ -87,6 +88,7 @@ public class BatchExecutionListAdapter extends BaseAdapter{
             holder.caseDesc = (TextView) convertView.findViewById(R.id.case_desc);
             holder.createTime = (TextView) convertView.findViewById(R.id.create_time);
             holder.addBtn = convertView.findViewById(R.id.batch_item_add);
+            holder.addTimes = (EditText) convertView.findViewById(R.id.batch_item_add_times);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -108,9 +110,10 @@ public class BatchExecutionListAdapter extends BaseAdapter{
 
                 @Override
                 public void onClick(View v) {
+                    int times = Integer.valueOf(holder.addTimes.getText().toString());
                     int position = (int) v.getTag();
                     if (position >= 0 && position < mData.size() && mDelegate != null) {
-                        mDelegate.onItemAdd(mData.get(position));
+                        mDelegate.onItemAdd(mData.get(position),times);
                     }
                 }
             });
@@ -124,5 +127,6 @@ public class BatchExecutionListAdapter extends BaseAdapter{
         TextView caseDesc;
         TextView createTime;
         View addBtn;
+        EditText addTimes;
     }
 }

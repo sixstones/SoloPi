@@ -139,8 +139,10 @@ public class BatchExecutionActivity extends BaseActivity
     }
 
     @Override
-    public void onItemAdd(RecordCaseInfo caseInfo) {
-        currentCases.add(caseInfo);
+    public void onItemAdd(RecordCaseInfo caseInfo,int times) {
+        for(int i=0;i<times;i++){
+            currentCases.add(caseInfo);
+        }
         updateExecutionTag();
     }
 
